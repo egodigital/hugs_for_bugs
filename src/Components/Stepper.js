@@ -4,7 +4,7 @@ import "antd/dist/antd.css";
 //import "./index.css";
 import { Steps, Button, message, DatePicker } from "antd";
 
-const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
+const { RangePicker } = DatePicker;
 function onChange(date, dateString) {
   console.log(date, dateString);
 }
