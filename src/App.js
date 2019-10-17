@@ -1,18 +1,32 @@
 import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import { Tabs } from "antd";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-      </header>
-    </div>
-  );
+import "./App.css";
+import "antd/dist/antd.css";
+import WrappedNormalLoginForm from "./Components/LogIn";
+import Stepper from "./Components/Stepper";
+
+const { TabPane } = Tabs;
+
+function callback(key) {
+  console.log(key);
 }
 
-export default App;
+export default class App extends React.Component {
+  render() {
+    return (
+      <div className="App">
+        <Tabs defaultActiveKey="1" onChange={callback}>
+          <TabPane tab="Home" key="1">
+            <WrappedNormalLoginForm />
+          </TabPane>
+          <TabPane tab="Rent" key="2">
+            <Stepper></Stepper>
+          </TabPane>
+        </Tabs>
+      </div>
+    );
+  }
+}
+
+//export default App;
