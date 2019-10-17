@@ -21,7 +21,10 @@ export default class TableCars extends React.Component {
           <Button
             type="primary"
             disabled={obj.status === "blocked" ? true : false}
-            onClick={() => this.props.changeTab()}
+            onClick={() => {
+              this.props.showStartDate();
+              this.props.changeTab();
+            }}
           >
             Book Now!
           </Button>
@@ -63,7 +66,7 @@ export default class TableCars extends React.Component {
               type="primary"
               onClick={() => {
                 this.props.changeTab();
-                //console.log("booking this car");
+                this.props.showStartDate();
               }}
             >
               Book Later

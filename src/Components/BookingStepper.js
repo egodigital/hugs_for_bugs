@@ -20,7 +20,6 @@ const { Step } = Steps;
 export default class Stepper extends React.Component {
   constructor(props) {
     super(props);
-    this.NumInput = React.createRef();
     this.state = {
       current: 0
     };
@@ -36,7 +35,9 @@ export default class Stepper extends React.Component {
     this.setState({ current });
   }
   render() {
-    // console.log("ref", this.NumInput);
+    const { current } = this.state;
+    const { putStartDate } = this.props;
+
     const steps = [
       {
         title: "Expected distance",
@@ -63,15 +64,14 @@ export default class Stepper extends React.Component {
           <div>
             <RangePicker
               onChange={onChange}
-              defaultValue={[moment(), moment()]}
+              defaultValue={putStartDate ? [moment(), ""] : ["", ""]}
               format={"YYYY/MM/DD"}
             />
-            <TimeRangePicker defaultValue={moment()} format="HH:mm" />
+            <TimeRangePicker putStartTime={putStartDate} />
           </div>
         )
       }
     ];
-    const { current } = this.state;
     return (
       <div>
         <Steps current={current}>

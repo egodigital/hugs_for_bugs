@@ -14,17 +14,19 @@ export default class TimeRangePicker extends React.Component {
   }
 
   render() {
+    const { putStartTime } = this.props;
+    //console.log("fff", putStartTime);
     return (
       <div>
         <TimePicker
-          defaultValue={moment()}
+          defaultValue={putStartTime ? moment() : ""}
           format="HH:mm"
           onChange={(date, dateString) =>
             this.setState({ startTime: dateString })
           }
         />
         <TimePicker
-          defaultValue={moment()}
+          defaultValue={""}
           format="HH:mm"
           onChange={(date, dateString) =>
             this.setState({ endTime: dateString })

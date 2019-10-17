@@ -5,7 +5,7 @@ import axios from "axios";
 import "./App.css";
 import "antd/dist/antd.css";
 import WrappedNormalLoginForm from "./Components/LogIn";
-import Stepper from "./Components/Stepper";
+import Stepper from "./Components/BookingStepper";
 import TableHomeScreen from "./Components/Table_Home_Screen";
 
 const { TabPane } = Tabs;
@@ -22,6 +22,7 @@ export default class App extends React.Component {
       isLogged: true,
       activeTab: "1",
       carsList: [],
+      putStartDate: true,
       axiosOptions: {
         headers: {
           "X-Api-Key": "55d01ce7-a51d-4cc2-905a-9cd2030742f7",
@@ -53,7 +54,6 @@ export default class App extends React.Component {
     return (
       <div className="App">
         <Tabs
-          //defaultActiveKey="1"
           onChange={key => this.changeTab(key)}
           activeKey={this.state.activeTab}
         >
@@ -63,6 +63,11 @@ export default class App extends React.Component {
                 carsList={this.state.carsList}
                 requestOptions={this.state.axiosOptions}
                 changeTab={() => this.changeTab("2")}
+                showStartDate={() => {
+                  this.setState({
+                    putStartDate: this.state.putStartDate ? false : true
+                  });
+                }}
               />
             ) : (
               <div>
@@ -81,7 +86,7 @@ export default class App extends React.Component {
             disabled={this.state.isLogged ? false : true}
             key="2"
           >
-            <Stepper></Stepper>
+            <Stepper putStartDate={this.state.putStartDate} />
           </TabPane>
         </Tabs>
       </div>
