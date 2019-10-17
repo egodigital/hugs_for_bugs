@@ -6,7 +6,7 @@ import "./App.css";
 import "antd/dist/antd.css";
 import WrappedNormalLoginForm from "./Components/LogIn";
 import Stepper from "./Components/Stepper";
-import TableCars from "./Components/Table_Home_Screen";
+import TableHomeScreen from "./Components/Table_Home_Screen";
 
 const { TabPane } = Tabs;
 
@@ -19,9 +19,10 @@ export default class App extends React.Component {
     super();
     this.state = {
       data: [],
-      isLogged: true,
+      isLogged: false,
       activeTab: "1",
-      options: {
+      carsList: [],
+      axiosOptions: {
         headers: {
           "X-Api-Key": "55d01ce7-a51d-4cc2-905a-9cd2030742f7",
           accept: "application / json"
@@ -29,24 +30,25 @@ export default class App extends React.Component {
       }
     };
   }
+
   componentDidMount() {
     axios
       .get(
         "https://ego-vehicle-api.azurewebsites.net/api/v2/vehicles",
-        this.state.options
+        this.state.axiosOptions
       )
       .then(response => {
         this.setState({
-          data: response.data
+          carsList: response.data.data
         });
-        //console.log(response.data[0]);
-        console.log(response.data);
-        //console.log(response.status);
-        //console.log(response.statusText);
-        //console.log(response.headers);
-        //console.log(response.config);
       });
   }
+  changeTab = () => {
+    //TODO: play with this => it is dummy
+    this.setState({ activeTab: "2" });
+    console.log("changing tab");
+  };
+
   render() {
     return (
       <div className="App">
@@ -57,7 +59,11 @@ export default class App extends React.Component {
         >
           <TabPane tab="Home" key="1">
             {this.state.isLogged ? (
-              <TableCars data={this.state.data} />
+              <TableHomeScreen
+                carsList={this.state.carsList}
+                requestOptions={this.state.axiosOptions}
+                changeTab={() => this.changeTab()}
+              />
             ) : (
               <div>
                 <WrappedNormalLoginForm />
@@ -70,7 +76,11 @@ export default class App extends React.Component {
               </div>
             )}
           </TabPane>
-          <TabPane tab="Book Later" disabled key="2">
+          <TabPane
+            tab="Book Later"
+            disabled={this.state.isLogged ? false : true}
+            key="2"
+          >
             <Stepper></Stepper>
           </TabPane>
         </Tabs>
