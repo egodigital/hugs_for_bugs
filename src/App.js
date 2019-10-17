@@ -19,7 +19,7 @@ export default class App extends React.Component {
     super();
     this.state = {
       data: [],
-      isLogged: false,
+      isLogged: true,
       activeTab: "1",
       carsList: [],
       axiosOptions: {
@@ -43,10 +43,10 @@ export default class App extends React.Component {
         });
       });
   }
-  changeTab = () => {
+  changeTab = key => {
     //TODO: play with this => it is dummy
-    this.setState({ activeTab: "2" });
-    console.log("changing tab");
+    this.setState({ activeTab: key });
+    console.log("changing tab", key);
   };
 
   render() {
@@ -54,7 +54,7 @@ export default class App extends React.Component {
       <div className="App">
         <Tabs
           //defaultActiveKey="1"
-          onChange={callback}
+          onChange={key => this.changeTab(key)}
           activeKey={this.state.activeTab}
         >
           <TabPane tab="Home" key="1">
@@ -62,7 +62,7 @@ export default class App extends React.Component {
               <TableHomeScreen
                 carsList={this.state.carsList}
                 requestOptions={this.state.axiosOptions}
-                changeTab={() => this.changeTab()}
+                changeTab={() => this.changeTab("2")}
               />
             ) : (
               <div>
@@ -77,7 +77,7 @@ export default class App extends React.Component {
             )}
           </TabPane>
           <TabPane
-            tab="Book Later"
+            tab="Booking"
             disabled={this.state.isLogged ? false : true}
             key="2"
           >

@@ -1,7 +1,4 @@
 import React from "react";
-
-//import "antd/dist/antd.css";
-//import "./index.css";
 import { Form, Icon, Input, Button, Checkbox } from "antd";
 
 class NormalLoginForm extends React.Component {
@@ -63,9 +60,3 @@ class NormalLoginForm extends React.Component {
 }
 
 export default Form.create({ name: "normal_login" })(NormalLoginForm);
-
-/* ReactDOM.render(
-  <WrappedNormalLoginForm />,
-  document.getElementById("container")
-);
- */

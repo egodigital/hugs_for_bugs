@@ -21,13 +21,7 @@ export default class TableCars extends React.Component {
           <Button
             type="primary"
             disabled={obj.status === "blocked" ? true : false}
-            onClick={
-              () =>
-                console.log(
-                  "booking this car",
-                  obj.status
-                ) /* this.setState({ isLogged: true }) */
-            }
+            onClick={() => this.props.changeTab()}
           >
             Book Now!
           </Button>
@@ -57,7 +51,7 @@ export default class TableCars extends React.Component {
               });
             });
         }}
-        expandRowByClick
+        //expandRowByClick
         expandedRowRender={(record, index) => (
           <div>
             <p style={{ float: "left" }}>

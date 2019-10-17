@@ -1,8 +1,11 @@
 import React from "react";
 //import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
+import TimeRangePicker from "./TimeRangePicker";
 //import "./index.css";
-import { Steps, Button, message, DatePicker } from "antd";
+import moment from "moment";
+
+import { Steps, Button, message, DatePicker, InputNumber } from "antd";
 
 const { RangePicker } = DatePicker;
 function onChange(date, dateString) {
@@ -11,34 +14,13 @@ function onChange(date, dateString) {
 function onOk(value) {
   console.log("onOk: ", value);
 }
-const { Step } = Steps;
 
-const steps = [
-  {
-    title: "First",
-    content: "First-content"
-  },
-  {
-    title: "Pick the Date",
-    content: <RangePicker onChange={onChange} />
-  },
-  {
-    title: "Pick the Time",
-    content: (
-      <RangePicker
-        showTime={{ format: "HH:mm" }}
-        format="YYYY-MM-DD HH:mm"
-        placeholder={["Start Time", "End Time"]}
-        onChange={onChange}
-        onOk={onOk}
-      />
-    )
-  }
-];
+const { Step } = Steps;
 
 export default class Stepper extends React.Component {
   constructor(props) {
     super(props);
+    this.NumInput = React.createRef();
     this.state = {
       current: 0
     };
@@ -53,8 +35,42 @@ export default class Stepper extends React.Component {
     const current = this.state.current - 1;
     this.setState({ current });
   }
-
   render() {
+    // console.log("ref", this.NumInput);
+    const steps = [
+      {
+        title: "Expected distance",
+        content: (
+          <div>
+            <InputNumber
+              max={150}
+              min={1}
+              defaultValue={5}
+              formatter={value => {
+                value.replace(/([A-z]\w+)/g, "");
+              }}
+              onChange={e => {
+                console.log("change", e);
+              }}
+            />
+            <p>km</p>
+          </div>
+        )
+      },
+      {
+        title: "Pick Date and Time",
+        content: (
+          <div>
+            <RangePicker
+              onChange={onChange}
+              defaultValue={[moment(), moment()]}
+              format={"YYYY/MM/DD"}
+            />
+            <TimeRangePicker defaultValue={moment()} format="HH:mm" />
+          </div>
+        )
+      }
+    ];
     const { current } = this.state;
     return (
       <div>
