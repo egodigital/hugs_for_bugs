@@ -21,3 +21,9 @@ On the other hand, Tenants will lose points for:
 * Causing damage to the car.
 
 These points can further be used to avail certain services for free, such as using the washing machine/dryer for no charge, booking the common hall for reduced price or in the ultimate case, getting some refund on rent payment.    
+
+
+# Folder distribution
+
+* 'src' folder contains the functions and components 
+* 'public' folder consists of React related dependancies and other files
