@@ -1,6 +1,7 @@
-#Folder Distribtuion
+# Folder Distribtuion
 
-##Functions
+## Functions
+Consists of the functions developed for functioning of the App
 
-
-##Components
+## Components
+Consists of files required for functioning of the App
