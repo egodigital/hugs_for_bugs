@@ -10,6 +10,14 @@ export default class TableCars extends React.Component {
     };
   }
   render() {
+    const {
+      carsList,
+      requestOptions,
+      changeTab,
+      showStartDate,
+      getCarId
+    } = this.props;
+    console.log("table home screen props", this.props);
     const columns = [
       { title: "Cars", dataIndex: "model", key: "id" },
       { title: "Status", dataIndex: "status", key: "id+1" },
@@ -22,8 +30,10 @@ export default class TableCars extends React.Component {
             type="primary"
             disabled={obj.status === "blocked" ? true : false}
             onClick={() => {
-              this.props.showStartDate();
-              this.props.changeTab();
+              console.log("Book now", id);
+              showStartDate(true);
+              changeTab();
+              getCarId(id);
             }}
           >
             Book Now!
@@ -31,7 +41,6 @@ export default class TableCars extends React.Component {
         )
       }
     ];
-    const { carsList } = this.props;
     // console.log("id", this.props.carsList);
     return (
       <Table
@@ -45,7 +54,7 @@ export default class TableCars extends React.Component {
               "https://ego-vehicle-api.azurewebsites.net/api/v2/vehicles/" +
                 record.id +
                 "/signals",
-              this.props.requestOptions
+              requestOptions
             )
             .then(response => {
               //console.log("signals", response.data.data);
@@ -64,9 +73,11 @@ export default class TableCars extends React.Component {
             </p>
             <Button
               type="primary"
-              onClick={() => {
-                this.props.changeTab();
-                this.props.showStartDate();
+              onClick={e => {
+                //.log("book later", record.id);
+                changeTab();
+                showStartDate(false);
+                getCarId(record.id);
               }}
             >
               Book Later

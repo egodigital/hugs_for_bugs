@@ -8,29 +8,33 @@ export default class TimeRangePicker extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      startTime: "",
-      endTime: ""
+      startTime: undefined,
+      endTime: undefined
     };
   }
 
   render() {
-    const { putStartTime } = this.props;
-    //console.log("fff", putStartTime);
+    const { putStartTime, onChange } = this.props;
+    const returnValue = [];
+    //console.log("state of time range picker", this.state);
+    //setTimeInterval(returnValue);
     return (
       <div>
         <TimePicker
           defaultValue={putStartTime ? moment() : ""}
           format="HH:mm"
-          onChange={(date, dateString) =>
-            this.setState({ startTime: dateString })
-          }
+          onChange={(date, dateString) => {
+            console.log("start", dateString);
+            onChange({ start: dateString });
+          }}
         />
         <TimePicker
           defaultValue={""}
           format="HH:mm"
-          onChange={(date, dateString) =>
-            this.setState({ endTime: dateString })
-          }
+          onChange={(date, dateString) => {
+            console.log("end", dateString);
+            onChange({ end: dateString });
+          }}
         />
       </div>
     );

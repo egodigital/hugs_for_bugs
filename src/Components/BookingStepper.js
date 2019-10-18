@@ -1,19 +1,16 @@
 import React from "react";
 //import ReactDOM from "react-dom";
 import "antd/dist/antd.css";
+import { Table } from "antd";
 import TimeRangePicker from "./TimeRangePicker";
+import collisionAlarm from "../Functions/collisionAlarm";
 //import "./index.css";
 import moment from "moment";
+import axios from "axios";
 
 import { Steps, Button, message, DatePicker, InputNumber } from "antd";
 
 const { RangePicker } = DatePicker;
-function onChange(date, dateString) {
-  console.log(date, dateString);
-}
-function onOk(value) {
-  console.log("onOk: ", value);
-}
 
 const { Step } = Steps;
 
@@ -21,7 +18,12 @@ export default class Stepper extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      current: 0
+      current: 0,
+      isDone: false,
+      supposedKilometers: undefined,
+      supposedDates: undefined,
+      supposedTime: ["12:20", "15:30"],
+      supposedPassengersNumber: 2
     };
   }
 
@@ -34,27 +36,47 @@ export default class Stepper extends React.Component {
     const current = this.state.current - 1;
     this.setState({ current });
   }
+  componentDidMount() {
+    axios
+      .get(
+        "https://ego-vehicle-api.azurewebsites.net/api/v2/vehicles/" +
+          this.props.carID +
+          "/Bookings",
+        this.props.requestOptions
+      )
+      .then(response => {
+        console.log("bookings", response.data.data);
+        this.setState({
+          currentCarBookings: response.data.data
+        });
+      });
+  }
   render() {
-    const { current } = this.state;
+    const { current, isDone } = this.state;
     const { putStartDate } = this.props;
+    console.log("booking stepper props", this.props);
+    console.log("booking stepper state", this.state);
 
     const steps = [
       {
-        title: "Expected distance",
+        title: "Distance & Passengers",
         content: (
-          <div>
+          <div style={{ display: "grid", gridTemplateColumns: "auto auto" }}>
             <InputNumber
-              max={150}
-              min={1}
-              defaultValue={5}
-              formatter={value => {
-                value.replace(/([A-z]\w+)/g, "");
-              }}
+              defaultValue={25}
               onChange={e => {
-                console.log("change", e);
+                this.setState({ supposedKilometers: e });
               }}
             />
             <p>km</p>
+            <InputNumber
+              defaultValue={2}
+              max={4}
+              onChange={e => {
+                this.setState({ supposedPassengersNumber: e });
+              }}
+            />
+            <p>persons</p>
           </div>
         )
       },
@@ -63,7 +85,9 @@ export default class Stepper extends React.Component {
         content: (
           <div>
             <RangePicker
-              onChange={onChange}
+              onChange={(date, dateString) =>
+                this.setState({ supposedDates: dateString })
+              }
               defaultValue={putStartDate ? [moment(), ""] : ["", ""]}
               format={"YYYY/MM/DD"}
             />
@@ -102,7 +126,22 @@ export default class Stepper extends React.Component {
           {current === steps.length - 1 && (
             <Button
               type="primary"
-              onClick={() => message.success("Processing complete!")}
+              onClick={() => {
+                console.log(
+                  "submission",
+                  this.state.supposedTime,
+                  this.state.supposedDates,
+                  this.state.supposedKilometers
+                );
+                this.setState({ isDone: isDone ? false : true });
+
+                collisionAlarm(
+                  this.state.currentCarBookings,
+                  this.state.supposedTime
+                )
+                  ? message.warning("Processing skipped!")
+                  : message.success("Processing complete!");
+              }}
             >
               Done
             </Button>
@@ -113,6 +152,26 @@ export default class Stepper extends React.Component {
             </Button>
           )}
         </div>
+        {isDone ? (
+          <Table
+            pagination={false}
+            columns={[
+              {
+                title: "From",
+                dataIndex: "from",
+                key: "id",
+                render: (id, obj) => moment(id).format("YYYY-MM-DD h:mm:ss a")
+              },
+              {
+                title: "Until",
+                dataIndex: "until",
+                key: "id+1",
+                render: (id, obj) => moment(id).format("YYYY-MM-DD h:mm:ss a")
+              }
+            ]}
+            dataSource={this.state.currentCarBookings}
+          />
+        ) : null}
       </div>
     );
   }

@@ -23,6 +23,7 @@ export default class App extends React.Component {
       activeTab: "1",
       carsList: [],
       putStartDate: true,
+      currentSelectedCar: "",
       axiosOptions: {
         headers: {
           "X-Api-Key": "55d01ce7-a51d-4cc2-905a-9cd2030742f7",
@@ -51,6 +52,13 @@ export default class App extends React.Component {
   };
 
   render() {
+    const {
+      isLogged,
+      carsList,
+      axiosOptions,
+      putStartDate,
+      currentSelectedCar
+    } = this.state;
     return (
       <div className="App">
         <Tabs
@@ -58,15 +66,19 @@ export default class App extends React.Component {
           activeKey={this.state.activeTab}
         >
           <TabPane tab="Home" key="1">
-            {this.state.isLogged ? (
+            {isLogged ? (
               <TableHomeScreen
-                carsList={this.state.carsList}
-                requestOptions={this.state.axiosOptions}
+                carsList={carsList}
+                requestOptions={axiosOptions}
                 changeTab={() => this.changeTab("2")}
-                showStartDate={() => {
+                showStartDate={answer => {
+                  console.log("answer", answer);
                   this.setState({
-                    putStartDate: this.state.putStartDate ? false : true
+                    putStartDate: answer
                   });
+                }}
+                getCarId={id => {
+                  this.setState({ currentSelectedCar: id });
                 }}
               />
             ) : (
@@ -86,7 +98,23 @@ export default class App extends React.Component {
             disabled={this.state.isLogged ? false : true}
             key="2"
           >
-            <Stepper putStartDate={this.state.putStartDate} />
+            <Stepper
+              putStartDate={putStartDate}
+              carID={currentSelectedCar}
+              requestOptions={axiosOptions}
+            />
+          </TabPane>
+          <TabPane
+            tab="Reccomendations"
+            disabled={this.state.isLogged ? false : true}
+            key="3"
+          >
+            here will be our reccomendations
+            {/* <Stepper
+              putStartDate={putStartDate}
+              carID={currentSelectedCar}
+              requestOptions={axiosOptions}
+            /> */}
           </TabPane>
         </Tabs>
       </div>
