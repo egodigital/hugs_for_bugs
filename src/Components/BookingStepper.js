@@ -22,7 +22,7 @@ export default class Stepper extends React.Component {
       isDone: false,
       supposedKilometers: undefined,
       supposedDates: undefined,
-      supposedTime: ["12:20", "15:30"],
+      supposedTime: ["9:20", "12:30"],
       supposedPassengersNumber: 2
     };
   }
@@ -65,7 +65,9 @@ export default class Stepper extends React.Component {
             <InputNumber
               defaultValue={25}
               onChange={e => {
-                this.setState({ supposedKilometers: e });
+                e >= 110
+                  ? message.warn("please, enter a lower distnce")
+                  : this.setState({ supposedKilometers: e });
               }}
             />
             <p>km</p>
@@ -127,20 +129,52 @@ export default class Stepper extends React.Component {
             <Button
               type="primary"
               onClick={() => {
+                const from = [
+                  this.state.supposedDates[0].concat(
+                    "T",
+                    this.state.supposedTime,
+                    [0]
+                  )
+                ];
+                const until = [
+                  this.state.supposedDates[1].concat(
+                    "T",
+                    this.state.supposedTime,
+                    [1]
+                  )
+                ];
+                const t1 = moment(from).format("YYYY-Mm-Dd h:mm:ss Z");
+                const t2 = moment(until).format("YYYY-Mm-Dd h:mm:ss Z");
+                axios.post(
+                  "https://ego-vehicle-api.azurewebsites.net/api/v2/vehicles/" +
+                    this.props.carID +
+                    "/Bookings",
+                  {
+                    from: "2019-10-12T11:00:00.000Z",
+                    until: "2019-10-12T19:20:00.000Z"
+                  },
+                  this.props.requestOptions
+                );
+                /* .then(response => {
+                    console.log("bookings", response.data.data);
+                    this.setState({
+                      currentCarBookings: response.data.data
+                    });
+                  }); */
+
                 console.log(
                   "submission",
                   this.state.supposedTime,
-                  this.state.supposedDates,
-                  this.state.supposedKilometers
+                  this.state.supposedDates
                 );
                 this.setState({ isDone: isDone ? false : true });
 
-                collisionAlarm(
-                  this.state.currentCarBookings,
+                collisionAlarm(this.state.currentCarBookings, [
+                  this.state.supposedDates,
                   this.state.supposedTime
-                )
-                  ? message.warning("Processing skipped!")
-                  : message.success("Processing complete!");
+                ]);
+                /* ? message.warning("Processing skipped!")
+                  : message.success("Processing complete!"); */
               }}
             >
               Done
@@ -160,13 +194,13 @@ export default class Stepper extends React.Component {
                 title: "From",
                 dataIndex: "from",
                 key: "id",
-                render: (id, obj) => moment(id).format("YYYY-MM-DD h:mm:ss a")
+                render: (id, obj) => moment(id).format("YYYY/MM/DD h:mm:ss ")
               },
               {
                 title: "Until",
                 dataIndex: "until",
                 key: "id+1",
-                render: (id, obj) => moment(id).format("YYYY-MM-DD h:mm:ss a")
+                render: (id, obj) => moment(id).format("YYYY/MM/DD h:mm:ss ")
               }
             ]}
             dataSource={this.state.currentCarBookings}
